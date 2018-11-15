@@ -1,0 +1,87 @@
+DROP DATABASE if EXISTS Dinamore;
+
+CREATE DATABASE Dinamore;
+
+USE Dinamore;
+
+CREATE TABLE Chef(
+	chefID VARCHAR(100),
+    chefName VARCHAR(100),
+	CONSTRAINT PRIMARY KEY (chefID)
+);
+
+
+CREATE TABLE TelephoneOperator(
+	teleOperatorID VARCHAR(100),
+    teleName VARCHAR(100),
+	CONSTRAINT PRIMARY KEY (teleOperatorID)
+);
+
+CREATE TABLE Customer(
+	customerID VARCHAR(100),
+    customerName VARCHAR(100),
+    telephoneNo VARCHAR(200),
+    address VARCHAR(200),
+	CONSTRAINT PRIMARY KEY (customerID)
+);
+
+CREATE TABLE Item(
+	itemCode VARCHAR(100),
+    description VARCHAR(400),
+    unitPrice DECIMAL(10,2),
+	CONSTRAINT PRIMARY KEY (itemCode)
+);
+
+CREATE TABLE Orders(
+	orderID VARCHAR(100),
+    orderDate VARCHAR(100),
+    processingTime VARCHAR(100),
+	itemCode VARCHAR(100) NOT NUll,
+	orderQty INT(11),
+	orderAmmount DECIMAL(10,2),
+    customerName VARCHAR(100),
+    telephoneNo VARCHAR(200),
+    customerAddress VARCHAR(200),
+    teleOperatorID VARCHAR(100) NOT NUll,
+    chefID VARCHAR(100) NOT NUll,
+	CONSTRAINT PRIMARY KEY (orderID),
+	CONSTRAINT FOREIGN KEY (itemCode) REFERENCES Item(itemCode)on update cascade on delete cascade,
+	CONSTRAINT FOREIGN KEY (teleOperatorID) REFERENCES TelephoneOperator(teleOperatorID) on update cascade on delete cascade,
+    CONSTRAINT FOREIGN KEY (chefID) REFERENCES Chef(chefID) on update cascade on delete cascade
+);
+
+CREATE TABLE OrderDetails(
+	orderID VARCHAR(6) NOT NULL,
+	itemCode VARCHAR(6) NOT NULL,
+	orderQty INT(11),
+	orderAmmount DECIMAL(10,2),
+	CONSTRAINT PRIMARY KEY (orderID,itemCode),
+	CONSTRAINT FOREIGN KEY (orderID) REFERENCES Orders(orderID) on update cascade on delete cascade,
+	CONSTRAINT FOREIGN KEY (itemCode) REFERENCES Item(itemCode)on update cascade on delete cascade
+);
+create Table user(
+	username varchar(200),
+	password varchar(3000) not null,
+	type varchar(200) not null,
+	CONSTRAINT PRIMARY KEY (username)
+);
+
+
+
+
+
+insert into user values('Amila','123456','TelephoneOperator');
+insert into user values('kumara','123456','Chef');
+insert into user values('wasantha','123456'Admin);
+
+
+insert into TelephoneOperator values('TP001','Amila');
+insert into Chef values('CH001','Kumara');
+
+insert into Item values('P001','Vegitable Bun',400.00);
+insert into Item values('P002','Chiken Bun',440.00);
+
+select c.chefName,count(o.orderID),sum(orderQty),sum( processingTime)
+from  orders o,chef c
+where c.chefID=o.chefID && c.chefID='CH001' &&
+o.orderDate='2017-12-14';
